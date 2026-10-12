@@ -1,0 +1,12 @@
+# Aucune clé ni donnée club dans ce dépôt
+brevo_keys.json
+ticketing_keys.json
+*.env
+*.csv
+*.xlsx
+*.zip
+*.png
+etat_*.json
+_discover_*.json
+Fichier ZIP _/
+__pycache__/
