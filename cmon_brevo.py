@@ -71,7 +71,7 @@ class Brevo:
                 "api-key": self._key, "accept": "application/json", "content-type": "application/json"})
             self.calls += 1
             try:
-                with urllib.request.urlopen(r, timeout=60) as resp:
+                with urllib.request.urlopen(r, timeout=180) as resp:  # /emailCampaigns+globalStats peut dépasser 60 s (YS, 19.10.2026)
                     raw = resp.read()
                     return resp.status, (json.loads(raw) if raw else {})
             except urllib.error.HTTPError as e:
@@ -93,6 +93,11 @@ class Brevo:
                     time.sleep(delay); delay *= 2
                     continue
                 raise BrevoError(f"{method} {path} -> erreur réseau : {e.reason}") from None
+            except (TimeoutError, ConnectionError) as e:  # délai de lecture : ni HTTPError ni URLError
+                if attempt < retries - 1:
+                    time.sleep(delay); delay *= 2
+                    continue
+                raise BrevoError(f"{method} {path} -> délai dépassé après {retries} tentatives ({type(e).__name__})") from None
         raise BrevoError(f"{method} {path} -> 429 persistant après {retries} tentatives")
 
     def get(self, path, **params):
