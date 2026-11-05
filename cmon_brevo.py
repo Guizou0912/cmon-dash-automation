@@ -488,6 +488,8 @@ def extract_club(club, key, outdir, camp_start, camp_end):
                     "Contacts exploitables": [r for r in total.values() if "email_marketing" in r["_SUBSCRIBED"]]}
 
     segs = {(s.get("segmentName") or s.get("name")): s["id"] for s in api.paged("/contacts/segments", "segments")}
+    if not set(SEGMENTS.values()) <= set(segs):  # noms attendus manquants : liste complète pour ajuster SEGMENTS
+        rep["segments_disponibles"] = sorted(segs)
     seg_ids = {}
     for out, seg_name in SEGMENTS.items():
         if seg_name not in segs:

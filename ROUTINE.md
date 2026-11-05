@@ -34,4 +34,4 @@ Tu tournes chaque lundi matin dans une session cloud, sans intervention humaine.
 
 - LS n'a ni segment `CMON-Actifs-6m` (ACTIF TOTAL) ni segment billetterie : c'est normal, à mentionner sans alerte.
 - Quelques contacts à la fois engagés et non-engagés : chevauchement connu des segments Brevo, information seulement.
-- SANTE (compte santé, ajouté le 05.11.2026) n'est pas un club : pas d'attribut NPA (le code postal vient de `_DETECTED_POSTALCODE`, détecté par Brevo) et ses segments n'ont pas encore été vérifiés. Un segment SANTE introuvable est à mentionner sans alerte, avec son nom, pour qu'on l'ajuste.
+- SANTE (compte santé, ajouté le 05.11.2026) n'est pas un club : pas d'attribut NPA (le code postal vient de `_DETECTED_POSTALCODE`, détecté par Brevo) et ses segments n'ont pas encore été vérifiés. Un segment SANTE introuvable est à mentionner sans alerte, avec son nom, pour qu'on l'ajuste. Si le rapport de SANTE contient `segments_disponibles`, recopie dans le verdict la liste complète de ces noms de segments (tels quels), pour qu'on choisisse les bons.
