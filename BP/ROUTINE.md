@@ -32,7 +32,7 @@ Créneau déjà passé au moment du run : ne le compte pas.
 ## Étapes
 
 1. **Date** (Europe/Zurich) et semaine cible `AAAA-Www`.
-2. **Anti-doublon** : cherche `[BP:RAPPEL:AAAA-Www]` dans `C09CAC4DNJC` (slack_search_public_and_private avec `in:<#C09CAC4DNJC>`, complété par slack_read_channel). Trouvé et envoyé le lundi de la semaine cible ou après → n'envoie rien, passe à l'étape 9, termine.
+2. **Anti-doublon** : cherche `[BP:RAPPEL:AAAA-Www]` dans `C09CAC4DNJC` (slack_search_public_and_private avec `in:<#C09CAC4DNJC>` et `include_bots: true` — le rappel est posté par Blue Penguin Bot —, complété par slack_read_channel). Trouvé et envoyé le lundi de la semaine cible ou après → n'envoie rien, passe à l'étape 9, termine.
 3. **Historique** : lis les 8 dernières semaines de `C09CAC4DNJC` et `C0BNJUMF4H2` (marqueurs `[BP:...]`) : UC déjà publiés, dernier format fan, dernier PRODUIT, accroches à ne pas répéter.
 4. **Plan** des 3 créneaux.
 5. **Données** : uniquement les sources de `BLUE_PENGUIN_WORKFLOW.md` §6 (bilan de saison HCC via le tableau du README cas d'usage, convention de partenariat, études citées en toutes lettres, bluepenguin.ch). **Jamais de chiffre inventé, arrondi ou tronqué**, jamais de barème de points non sourcé, jamais de chiffre interne négatif (bugs, doublons, taux de connexion), jamais de nom de fan. Doute → retire le chiffre ou le post et signale `[CHECK DATA]`.
@@ -42,8 +42,11 @@ Créneau déjà passé au moment du run : ne le compte pas.
    - Texte brut prêt à copier (pas d'astérisques), plus 2 accroches alternatives.
 7. **Visuels** — atelier `/tmp/bpstudio`, voir la section ATELIER ci-dessous. Après chaque rendu, **ouvre l'image de contrôle** (contact-sheet HyperFrames ou PNG) avec l'outil de lecture d'image : bons chiffres, bonne source, logo en bas à droite et dans la bonne couleur, rien de coupé, pas de texte blanc sur cyan. Défaut → corrige et relance (2 essais max). Échec persistant → envoie le post avec un brief visuel texte à la place du fichier et dis-le.
 8. **Envoi Slack** (connecteur Slack ; charge les outils avec ToolSearch s'ils sont différés) :
-   a. **Textes** dans `C09CAC4DNJC` (#blue-penguin) : d'abord le RAPPEL, puis un message par post (format POST).
-   b. **Visuels** dans `C0BNJUMF4H2` (#tsiory-daily) : un message par post, fichiers joints via slack_get_file_upload_url (nom + taille exacte en octets) → POST des octets avec curl sur l'URL rendue (Content-Type image/png, video/mp4, image/gif ou image/jpeg) → slack_complete_file_upload avec `channel_id` et l'`initial_comment` au format VISUEL. Motion : `_son.mp4` + `.mp4` muet + `_720.gif` + `_miniature.jpg`. Fichier > 50 Mo : n'envoie que le MP4 avec son et la miniature.
+   a. **RAPPEL via Blue Penguin Bot** (webhook entrant vers #blue-penguin, pour que l'opérateur reçoive la notification — les messages du connecteur partent en son nom et ne le notifient pas). L'URL du webhook est donnée dans le prompt de la routine (`BP_WEBHOOK`) : **ne jamais l'afficher, la journaliser ni l'écrire dans un fichier ou un message**. Envoi :
+      `python3 -c "import json,sys;print(json.dumps({'text':open(sys.argv[1]).read()}))" rappel.txt | curl -sS -X POST -H 'Content-type: application/json' --data @- "$BP_WEBHOOK"` (réponse attendue : `ok`).
+      Le texte commence par `<@U08UHGCA727>` (format RAPPEL). Échec du webhook → envoie le RAPPEL avec le connecteur et signale-le à la fin.
+   b. **Textes** dans `C09CAC4DNJC` (#blue-penguin) : un message par post (format POST), avec le connecteur Slack, après le RAPPEL.
+   c. **Visuels** dans `C0BNJUMF4H2` (#tsiory-daily) : un message par post, fichiers joints via slack_get_file_upload_url (nom + taille exacte en octets) → POST des octets avec curl sur l'URL rendue (Content-Type image/png, video/mp4, image/gif ou image/jpeg) → slack_complete_file_upload avec `channel_id` et l'`initial_comment` au format VISUEL. Motion : `_son.mp4` + `.mp4` muet + `_720.gif` + `_miniature.jpg`. Fichier > 50 Mo : n'envoie que le MP4 avec son et la miniature.
 9. **Metricool (posts validés uniquement)** — marque « Blue Penguin », blogId `7424422`, fuseau Europe/Zurich.
    - Repère dans `C09CAC4DNJC` les posts `[BP:...]` des 3 dernières semaines portant une réaction ✅ (slack_get_reactions) et dont la date conseillée est encore à venir.
    - Vérifie qu'ils ne sont pas déjà dans Metricool (getScheduledPosts sur la période) ni signalés « brouillon Metricool créé » dans leur fil.
@@ -54,10 +57,10 @@ Créneau déjà passé au moment du run : ne le compte pas.
 
 ## Formats Slack
 
-RAPPEL (premier message dans `C09CAC4DNJC`) :
+RAPPEL (premier message dans `C09CAC4DNJC`, via Blue Penguin Bot) :
 ```
 [BP:RAPPEL:AAAA-Www]
-🐧 *Blue Penguin — posts de la semaine du lundi JJ au dimanche JJ mois AAAA*
+<@U08UHGCA727> 🐧 *Blue Penguin — posts de la semaine du lundi JJ au dimanche JJ mois AAAA*
 Les 3 posts sont prêts à valider (✅ ou ✏️ en fil) ; visuels dans <#C0BNJUMF4H2>.
 1. mardi JJ.MM, 8h30 · LinkedIn · Cas d'usage UCxx · motion
 2. jeudi JJ.MM, 18h00 · Instagram · TUTO / RÉCOMPENSE / COMMUNAUTÉ · PNG
