@@ -1,0 +1,97 @@
+<!doctype html>
+<!-- Blue Penguin · gabarit HyperFrames « Chiffre clé » (feed 1080x1350, 7 s).
+     Données à changer : bloc DATA (kicker, valeur, phrase, source) + photo dans assets/.
+     Charte BP v1.0 : Outfit 500 / Inter 400-600, cyan #40E4FC, navy #0B1B33, logo en bas à droite.
+     Sons : bibliothèque CC0 Barty-Bart (sound-kit/sfx), copiés dans assets/sfx. -->
+<html lang="fr"
+  data-composition-variables='[
+  {"id":"color-ground","type":"color","label":"Fond","default":"#0B1B33"},
+  {"id":"color-accent","type":"color","label":"Cyan signature","default":"#40E4FC"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1350" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Outfit"; font-weight: 500; src: url("assets/fonts/outfit-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 500; src: url("assets/fonts/outfit-latin-ext-500-normal.woff2") format("woff2"); unicode-range: U+0100-024F; }
+      @font-face { font-family: "Inter"; font-weight: 400; src: url("assets/fonts/inter-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 400; src: url("assets/fonts/inter-latin-ext-400-normal.woff2") format("woff2"); unicode-range: U+0100-024F; }
+      @font-face { font-family: "Inter"; font-weight: 600; src: url("assets/fonts/inter-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 600; src: url("assets/fonts/inter-latin-ext-600-normal.woff2") format("woff2"); unicode-range: U+0100-024F; }
+      :root { --color-ground: #0B1B33; --color-accent: #40E4FC; --ink: #14213D; --white: #fff; --fg2: rgba(255,255,255,.74); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1350px; overflow: hidden; background: var(--color-ground); }
+      #root { position: relative; width: 100%; height: 100%; font-family: "Inter", sans-serif; color: var(--white); }
+      #bg { position: absolute; inset: 0; overflow: hidden; }
+      #photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; transform-origin: 60% 60%; }
+      #scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,27,51,.97) 0%, rgba(11,27,51,.84) 38%, rgba(11,27,51,.25) 62%, rgba(11,27,51,.94) 100%); }
+      #content { position: absolute; left: 72px; right: 72px; top: 96px; }
+      #kicker { font: 600 26px "Inter"; letter-spacing: .22em; text-transform: uppercase; color: var(--fg2); }
+      #rule { width: 80px; height: 3px; background: var(--color-accent); margin-top: 18px; transform-origin: left center; }
+      #fig { margin-top: 44px; font: 600 200px/1 "Inter"; letter-spacing: -.035em; color: var(--color-accent); font-variant-numeric: tabular-nums; white-space: nowrap; }
+      #line { margin-top: 26px; max-width: 880px; font: 400 32px/1.45 "Inter"; color: var(--fg2); }
+      #line b { color: var(--white); font-weight: 600; }
+      #foot { position: absolute; left: 72px; right: 72px; bottom: 64px; display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
+      #src { font: 400 22px/1.4 "Inter"; font-style: italic; color: var(--fg2); max-width: 620px; }
+      #url { margin-top: 10px; font: 600 26px "Inter"; color: var(--color-accent); }
+      #logo { height: 96px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="7" data-width="1080" data-height="1350">
+      <div id="bg" class="clip" data-start="0" data-duration="7" data-track-index="0" data-layout-ignore>
+        <img id="photo" src="assets/photo.jpg" alt="Supporter qui scanne son billet" />
+        <div id="scrim"></div>
+      </div>
+
+      <div id="content" class="clip" data-start="0" data-duration="7" data-track-index="1">
+        <div id="kicker">Cas d’usage · le parcours fan</div>
+        <div id="rule"></div>
+        <div id="fig"><span id="num">0,0</span>&#8239;%</div>
+        <p id="line">des parcours vont jusqu’au <b>scan du billet</b> : 775 sur 778.</p>
+      </div>
+
+      <div id="foot" class="clip" data-start="0" data-duration="7" data-track-index="2">
+        <div>
+          <p id="src">Source : Bilan de saison Blue Penguin × HCC 2025-2026, slide 10 (automations WELCOME et SCA)</p>
+          <p id="url">bluepenguin.ch</p>
+        </div>
+        <img id="logo" src="assets/logo_cyan.png" alt="Blue Penguin" />
+      </div>
+
+      <!-- Son : identité « validation » (pas d'impact lourd). Volumes avant normalisation. -->
+      <audio id="s-whoosh" src="assets/sfx/whoosh.ogg" data-start="0.05" data-duration="0.43" data-volume="0.45" data-track-index="10"></audio>
+      <audio id="s-click" src="assets/sfx/click.ogg" data-start="0.3" data-duration="0.09" data-volume="0.5" data-track-index="11"></audio>
+      <audio id="s-riser" src="assets/sfx/riser.ogg" data-start="0.2" data-duration="0.9" data-volume="0.35" data-fade-out="0.25" data-track-index="12"></audio>
+      <audio id="s-t1" src="assets/sfx/tick.ogg" data-start="0.85" data-duration="0.02" data-volume="0.35" data-track-index="13"></audio>
+      <audio id="s-t2" src="assets/sfx/tick2.ogg" data-start="1.1" data-duration="0.08" data-volume="0.35" data-track-index="14"></audio>
+      <audio id="s-t3" src="assets/sfx/tick.ogg" data-start="1.38" data-duration="0.02" data-volume="0.3" data-track-index="15"></audio>
+      <audio id="s-t4" src="assets/sfx/tick2.ogg" data-start="1.7" data-duration="0.08" data-volume="0.28" data-track-index="16"></audio>
+      <audio id="s-ding" src="assets/sfx/ding.ogg" data-start="2.2" data-duration="0.7" data-volume="0.6" data-track-index="17"></audio>
+      <audio id="s-pop" src="assets/sfx/pop.ogg" data-start="3.25" data-duration="0.08" data-volume="0.6" data-track-index="18"></audio>
+    </div>
+
+    <script>
+      const DATA = { value: 99.6, decimals: 1 };
+      const fmt = v => v.toFixed(DATA.decimals).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      const tl = gsap.timeline({ paused: true });
+      // zoom lent de la photo, sur toute la durée
+      tl.fromTo("#photo", { scale: 1.08 }, { scale: 1, duration: 7, ease: "none" }, 0);
+      // en-tête
+      tl.fromTo("#kicker", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+      tl.fromTo("#rule", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.out" }, 0.3);
+      // chiffre : apparition puis compteur 0 -> valeur (arrive à 2,2 s, calé sur le ding)
+      tl.fromTo("#fig", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.7);
+      const counter = { v: 0 };
+      tl.fromTo(counter, { v: 0 }, { v: DATA.value, duration: 1.4, ease: "power4.out",
+        onUpdate: () => { document.getElementById("num").textContent = fmt(counter.v); } }, 0.8);
+      // phrase puis pied de visuel (source + logo)
+      tl.fromTo("#line", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 2.4);
+      tl.fromTo("#foot", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 3.1);
+      tl.fromTo("#logo", { scale: 0.85 }, { scale: 1, duration: 0.5, ease: "back.out(1.6)" }, 3.2);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

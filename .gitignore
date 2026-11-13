@@ -10,3 +10,6 @@ etat_*.json
 _discover_*.json
 Fichier ZIP _/
 __pycache__/
+
+# Blue Penguin : logos, éléments et photos de la charte (pas de données club)
+!BP/**/*.png
