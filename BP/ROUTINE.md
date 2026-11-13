@@ -24,10 +24,33 @@ Semaine cible : si on est lundi, la semaine en cours ; sinon (lancement manuel),
    Le prochain cas d'usage de la série UC01 → UC12 jamais publié (ordre : 01, 02, 03, 04…10, 11, 12 ; tableau sourcé : `BP/docs/README_cas-usage-HCC.md`). Quand les 12 sont publiés, reprends le plus ancien avec un nouvel angle. Le même MP4 sert de Reel Instagram (proposer une légende IG courte en plus).
 2. **Jeudi 18h00 — Instagram — FAN** (PNG) : alterne TUTO (comment marchent les points, les niveaux, l'app) / RÉCOMPENSE (lots, Soirée Blue Penguin, Top 20 **sans aucun nom**) / COMMUNAUTÉ (sondage, question). Jamais deux fois le même format de suite.
 3. **Créneau 3** (PNG) :
-   - s'il y a un **match du HCC à domicile** dans la semaine cible (vérifié sur le calendrier officiel https://www.hccnet.ch et/ou https://www.sihf.ch) : **MATCH DAY Instagram**, publication le jour du match à 12h00, « scanne ton billet, gagne tes points » ;
+   - s'il y a un **match du HCC à domicile** dans la semaine cible (vérifié sur le calendrier officiel https://www.hccnet.ch/saison/calendrier/ et/ou https://www.sihf.ch) : **MATCH DAY Instagram**, publication le jour du match à 12h00, « scanne ton billet, gagne tes points ». **Deux matchs à domicile** : le post feed va au match du vendredi, samedi ou dimanche ; pour l'autre match, produis en plus une **Story 1080×1920** (`taille: 'story'`), signalée « Story seule, publication manuelle » dans le message VISUEL (elle ne compte pas dans les 3 posts) ;
    - sinon : **PRODUIT LinkedIn**, vendredi 8h30, en rotation M1 authentification certifiée → M3 collectibles & enchères → M2 récompenser la fidélité (voir `BP/docs/README_kit-photo-v2.md`).
 
 Créneau déjà passé au moment du run : ne le compte pas.
+Jours fériés : un post fan qui tombe le 24.12 ou le 31.12 est avancé à la veille (mercredi), même heure.
+Le calendrier éditorial validé est publié ici : https://claude.ai/artifact/GsqMQk7svjVEgXJ44nrCVn (sujets fan prévus semaine par semaine). La routine ne peut pas le lire : suis le plan ci-dessous, qui en est la copie. Un fil Slack qui demande autre chose prime sur le plan.
+
+### Plan validé (créneau 2 = post fan ; UC = créneau 1 ; P = produit si pas de match)
+
+| Semaine | UC | Post fan (jeudi 18h00 sauf mention) | Produit |
+|---|---|---|---|
+| 2026-W47 | UC01 | TUTO-001 Comment gagner tes points (scan du billet : 79,7 % des points) | — |
+| 2026-W48 | UC02 | RÉCOMPENSE La Soirée Blue Penguin, le Top 20 et ses lots (aucun nom) | — |
+| 2026-W49 | UC03 | COMMUNAUTÉ sondage « Quel lot du Top 20 te ferait rêver ? » | — |
+| 2026-W50 | UC04 | TUTO-002 Les 4 niveaux Bronze, Argent, Or, Diamant | M1 |
+| 2026-W51 | UC05 | RÉCOMPENSE Les collectibles certifiés (ORIGYN) | — |
+| 2026-W52 | UC06 | COMMUNAUTÉ « Ton meilleur moment 2026 aux Mélèzes ? » (mer. 23.12) | — |
+| 2026-W53 | UC07 | TUTO-003 Ta fan card dans l'app (mer. 30.12) | — |
+| 2027-W01 | UC08 | RÉCOMPENSE Mi-saison : la course au Top 20 | — |
+| 2027-W02 | UC09 | COMMUNAUTÉ quiz « Combien de niveaux compte Blue Penguin ? » | M3 |
+| 2027-W03 | UC10 | TUTO-004 Tes achats boutique comptent | — |
+| 2027-W04 | UC11 | RÉCOMPENSE Un lot du Top 20 : la Business Loge | — |
+| 2027-W05 | UC12 | COMMUNAUTÉ sondage « Ton rituel de jour de match ? » | — |
+| 2027-W06 | UC01 nouvel angle | TUTO-005 Tes interactions comptent | M2 |
+| 2027-W07 | UC02 nouvel angle | RÉCOMPENSE Dernière ligne droite vers le Top 20 (date de la Soirée à vérifier) | — |
+
+Si l'historique Slack montre qu'un UC prévu est déjà publié, prends le suivant jamais publié.
 
 ## Étapes
 
