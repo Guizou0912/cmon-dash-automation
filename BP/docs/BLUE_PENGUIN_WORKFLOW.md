@@ -12,10 +12,9 @@ Demande : Douglas Finazzi, #blue-penguin, 12.11.2026.
 
 | Quoi | Canal | ID |
 |---|---|---|
-| Textes des posts (captions IG + LinkedIn) | #blue-penguin | `C09CAC4DNJC` |
-| Visuels (PNG, MP4, GIF) | #tsiory-daily | `C0BNJUMF4H2` |
+| Posts complets : texte + visuel joint (PNG, MP4 ; variantes GIF/miniature dans le fil) | #blue-penguin | `C09CAC4DNJC` |
 
-#tsiory-daily reçoit aussi GriddyPicks : chaque message visuel Blue Penguin commence par **`🐧 BLUE PENGUIN — VISUEL`** et le marqueur `[BP:...]`, pour ne jamais mélanger avec `[GP:...]`.
+Depuis le 16.11.2026, plus rien de Blue Penguin ne va dans #tsiory-daily (`C0BNJUMF4H2`) : chaque post part en un seul message dans #blue-penguin.
 
 Validation : réaction ✅ = validé, ✏️ + réponse en fil = correction demandée. Claude corrige dans le fil, jamais en nouveau message.
 
@@ -27,9 +26,7 @@ Lundi : plan de la semaine
       ▼
 Claude : choisit les sujets (§4), vérifie les chiffres (§6), rédige (§7)
       │
-      ├──► Textes  ──► #blue-penguin  C09CAC4DNJC   [BP:...]
-      │
-      └──► Visuels (skill blue-penguin-studio) ──► #tsiory-daily C0BNJUMF4H2  [BP:...:VISUAL]
+      └──► Post complet (texte + visuel, skill blue-penguin-studio) ──► #blue-penguin C09CAC4DNJC  [BP:...]
                                      │
                                      ▼
                      Validation humaine (✅ / ✏️)
@@ -119,7 +116,7 @@ TEXTE
 
 CTA : Découvrir la solution → bluepenguin.ch
 Hashtags : 3 max
-Visuel : voir [BP:CASUSAGE:UC06:LINKEDIN:VISUAL] dans #tsiory-daily
+Visuel : joint (variantes dans le fil)
 
 Validation : ✅ ou ✏️ en fil
 ```
@@ -129,16 +126,9 @@ Règles de caption :
 - **Instagram** : 150-400 caractères, tutoiement, 1 CTA, lien en bio, 3-5 hashtags, 3 emojis max.
 - Conventions suisses : « », CHF, ’.
 
-## 8. Format Slack — VISUEL (#tsiory-daily C0BNJUMF4H2)
+## 8. Visuels joints au post (#blue-penguin C09CAC4DNJC)
 
-```text
-[BP:CASUSAGE:UC06:LINKEDIN:VISUAL]
-🐧 BLUE PENGUIN — VISUEL
-Pour le post : [BP:CASUSAGE:UC06:LINKEDIN]
-Fichiers : BP_CASUSAGE_2026-11-18_UC06_LINKEDIN.mp4 / _son.mp4 / _720.gif / _miniature.jpg
-Contrôles studio : OK (police, débordement, titre ≤ 6 mots)
-```
-Fichiers joints via le connecteur Slack (MP4 + GIF pour les motion, PNG sinon).
+Le message du post (§7) est l'`initial_comment` du visuel principal (PNG, ou `_son.mp4` pour un motion). Les variantes d'un motion (`.mp4` muet, `_720.gif`, `_miniature.jpg`) et une Story éventuelle sont envoyées dans le fil de ce message.
 
 ## 9. Production des visuels
 
