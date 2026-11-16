@@ -113,8 +113,8 @@ Identité Blue Penguin : **une « validation » chaleureuse**, pas le son gaming
 
 ## Livraison : Slack, puis Metricool
 
-1. **Visuels** dans #tsiory-daily (`C0BNJUMF4H2`). Le message commence par `🐧 BLUE PENGUIN — VISUEL` suivi de `[BP:...:VISUAL]`, puis les fichiers sont joints.
-2. **Textes** dans #blue-penguin (`C09CAC4DNJC`) avec le marqueur `[BP:...]`.
+1. **Post complet** dans #blue-penguin (`C09CAC4DNJC`) : un seul message par post avec le marqueur `[BP:...]`, le texte et le visuel principal joint (variantes d'un motion dans le fil). Plus rien ne va dans #tsiory-daily (`C0BNJUMF4H2`) depuis le 16.11.2026.
+2. Validation ✅ ou ✏️ en fil sur ce message.
 3. **Après validation (✅)**, programmer sur **Metricool, marque « Blue Penguin » (blogId `7424422`, fuseau Europe/Zurich)** :
    - réseaux connectés : Instagram `blue.penguin.official`, LinkedIn (`urn:li:organization:110086834`) et Facebook ;
    - outil `createScheduledPost` avec **`draft: true`** : on crée un brouillon, l'humain publie. Jamais `autoPublish` sans accord explicite ;

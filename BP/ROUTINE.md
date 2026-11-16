@@ -24,7 +24,7 @@ Semaine cible : si on est lundi, la semaine en cours ; sinon (lancement manuel),
    Le prochain cas d'usage de la série UC01 → UC12 jamais publié (ordre : 01, 02, 03, 04…10, 11, 12 ; tableau sourcé : `BP/docs/README_cas-usage-HCC.md`). Quand les 12 sont publiés, reprends le plus ancien avec un nouvel angle. Le même MP4 sert de Reel Instagram (proposer une légende IG courte en plus).
 2. **Jeudi 18h00 — Instagram — FAN** (PNG) : alterne TUTO (comment marchent les points, les niveaux, l'app) / RÉCOMPENSE (lots, Soirée Blue Penguin, Top 20 **sans aucun nom**) / COMMUNAUTÉ (sondage, question). Jamais deux fois le même format de suite.
 3. **Créneau 3** (PNG) :
-   - s'il y a un **match du HCC à domicile** dans la semaine cible (vérifié sur le calendrier officiel https://www.hccnet.ch/saison/calendrier/ et/ou https://www.sihf.ch) : **MATCH DAY Instagram**, publication le jour du match à 12h00, « scanne ton billet, gagne tes points ». **Deux matchs à domicile** : le post feed va au match du vendredi, samedi ou dimanche ; pour l'autre match, produis en plus une **Story 1080×1920** (`taille: 'story'`), signalée « Story seule, publication manuelle » dans le message VISUEL (elle ne compte pas dans les 3 posts) ;
+   - s'il y a un **match du HCC à domicile** dans la semaine cible (vérifié sur le calendrier officiel https://www.hccnet.ch/saison/calendrier/ et/ou https://www.sihf.ch) : **MATCH DAY Instagram**, publication le jour du match à 12h00, « scanne ton billet, gagne tes points ». **Deux matchs à domicile** : le post feed va au match du vendredi, samedi ou dimanche ; pour l'autre match, produis en plus une **Story 1080×1920** (`taille: 'story'`), signalée « Story seule, publication manuelle » dans le message du post (elle ne compte pas dans les 3 posts) ;
    - sinon : **PRODUIT LinkedIn**, vendredi 8h30, en rotation M1 authentification certifiée → M3 collectibles & enchères → M2 récompenser la fidélité (voir `BP/docs/README_kit-photo-v2.md`).
 
 Créneau déjà passé au moment du run : ne le compte pas.
@@ -56,7 +56,7 @@ Si l'historique Slack montre qu'un UC prévu est déjà publié, prends le suiva
 
 1. **Date** (Europe/Zurich) et semaine cible `AAAA-Www`.
 2. **Anti-doublon** : cherche `[BP:RAPPEL:AAAA-Www]` dans `C09CAC4DNJC` (slack_search_public_and_private avec `in:<#C09CAC4DNJC>` et `include_bots: true` — le rappel est posté par Blue Penguin Bot —, complété par slack_read_channel). Trouvé et envoyé le lundi de la semaine cible ou après → n'envoie rien, passe à l'étape 9, termine.
-3. **Historique** : lis les 8 dernières semaines de `C09CAC4DNJC` et `C0BNJUMF4H2` (marqueurs `[BP:...]`) : UC déjà publiés, dernier format fan, dernier PRODUIT, accroches à ne pas répéter.
+3. **Historique** : lis les 8 dernières semaines de `C09CAC4DNJC` (marqueurs `[BP:...]` ; les semaines avant le 16.11.2026 ont aussi des visuels `[BP:...:VISUAL]` dans `C0BNJUMF4H2`, en lecture seule) : UC déjà publiés, dernier format fan, dernier PRODUIT, accroches à ne pas répéter.
 4. **Plan** des 3 créneaux.
 5. **Données** : uniquement les sources de `BLUE_PENGUIN_WORKFLOW.md` §6 (bilan de saison HCC via le tableau du README cas d'usage, convention de partenariat, études citées en toutes lettres, bluepenguin.ch). **Jamais de chiffre inventé, arrondi ou tronqué**, jamais de barème de points non sourcé, jamais de chiffre interne négatif (bugs, doublons, taux de connexion), jamais de nom de fan. Doute → retire le chiffre ou le post et signale `[CHECK DATA]`.
 6. **Rédaction** :
@@ -68,10 +68,10 @@ Si l'historique Slack montre qu'un UC prévu est déjà publié, prends le suiva
    a. **RAPPEL via Blue Penguin Bot** (webhook entrant vers #blue-penguin, pour que l'opérateur reçoive la notification — les messages du connecteur partent en son nom et ne le notifient pas). L'URL du webhook est donnée dans le prompt de la routine (`BP_WEBHOOK`) : **ne jamais l'afficher, la journaliser ni l'écrire dans un fichier ou un message**. Envoi :
       `python3 -c "import json,sys;print(json.dumps({'text':open(sys.argv[1]).read()}))" rappel.txt | curl -sS -X POST -H 'Content-type: application/json' --data @- "$BP_WEBHOOK"` (réponse attendue : `ok`).
       Le texte commence par `<@U08UHGCA727>` (format RAPPEL). Échec du webhook → envoie le RAPPEL avec le connecteur et signale-le à la fin.
-   b. **Textes** dans `C09CAC4DNJC` (#blue-penguin) : un message par post (format POST), avec le connecteur Slack, après le RAPPEL.
-   c. **Alerte visuels via Blue Penguin Bot** dans `C0BNJUMF4H2` (#tsiory-daily), juste avant les fichiers, même méthode que 8a avec `$BP_WEBHOOK_VISUELS` (secret, jamais affiché) :
-      `[BP:VISUELS:AAAA-Www]` / `<@U08UHGCA727> 🐧 *Blue Penguin — les visuels de la semaine du lundi JJ au dimanche JJ mois AAAA sont prêts ci-dessous* (N fichiers : liste courte des posts)`. Échec du webhook → poursuis sans alerte et signale-le à la fin.
-   d. **Visuels** dans `C0BNJUMF4H2` (#tsiory-daily) : un message par post, fichiers joints via slack_get_file_upload_url (nom + taille exacte en octets) → POST des octets avec curl sur l'URL rendue (Content-Type image/png, video/mp4, image/gif ou image/jpeg) → slack_complete_file_upload avec `channel_id` et l'`initial_comment` au format VISUEL. Motion : `_son.mp4` + `.mp4` muet + `_720.gif` + `_miniature.jpg`. Fichier > 50 Mo : n'envoie que le MP4 avec son et la miniature.
+   b. **Posts complets** dans `C09CAC4DNJC` (#blue-penguin), après le RAPPEL : **un message par post contenant le texte ET le visuel**. **Plus rien n'est envoyé dans #tsiory-daily (`C0BNJUMF4H2`)** : ni alerte, ni visuel, ni texte.
+      - Visuel principal joint au message du post : slack_get_file_upload_url (nom + taille exacte en octets) → POST des octets avec curl sur l'URL rendue (Content-Type image/png, video/mp4, image/gif ou image/jpeg) → slack_complete_file_upload avec `channel_id: C09CAC4DNJC` et `initial_comment` = le message complet au format POST. Visuel principal : le PNG ; pour un motion, `_son.mp4`.
+      - Fichiers secondaires d'un motion (`.mp4` muet, `_720.gif`, `_miniature.jpg`) et Story éventuelle : retrouve le `ts` du message du post (slack_read_channel sur `C09CAC4DNJC`, marqueur `[BP:...]`), puis envoie-les **dans le fil** de ce message (même flux d'upload, avec `thread_ts`). Fichier > 50 Mo : n'envoie que le `_son.mp4` et la miniature.
+      - Échec d'upload après 2 essais → envoie le post en texte (slack_send_message) avec un brief visuel à la place du fichier et signale-le.
 9. **Metricool (posts validés uniquement)** — marque « Blue Penguin », blogId `7424422`, fuseau Europe/Zurich.
    - Repère dans `C09CAC4DNJC` les posts `[BP:...]` des 3 dernières semaines portant une réaction ✅ (slack_get_reactions) et dont la date conseillée est encore à venir.
    - Vérifie qu'ils ne sont pas déjà dans Metricool (getScheduledPosts sur la période) ni signalés « brouillon Metricool créé » dans leur fil.
@@ -86,7 +86,7 @@ RAPPEL (premier message dans `C09CAC4DNJC`, via Blue Penguin Bot) :
 ```
 [BP:RAPPEL:AAAA-Www]
 <@U08UHGCA727> 🐧 *Blue Penguin — posts de la semaine du lundi JJ au dimanche JJ mois AAAA*
-Les 3 posts sont prêts à valider (✅ ou ✏️ en fil) ; visuels dans <#C0BNJUMF4H2>.
+Les 3 posts sont prêts à valider ci-dessous, visuels joints (✅ ou ✏️ en fil).
 1. mardi JJ.MM, 8h30 · LinkedIn · Cas d'usage UCxx · motion
 2. jeudi JJ.MM, 18h00 · Instagram · TUTO / RÉCOMPENSE / COMMUNAUTÉ · PNG
 3. ... · MATCH DAY ou PRODUIT · PNG
@@ -94,7 +94,7 @@ Match HCC à domicile : ... (ou « aucun »)
 Metricool : N brouillon(s) créé(s) pour les posts validés (ou « aucun »).
 ```
 
-POST (un message par post dans `C09CAC4DNJC`) :
+POST (`initial_comment` du visuel principal, un message par post dans `C09CAC4DNJC`) :
 ```
 [BP:FAMILLE:DETAIL:RESEAU]
 🐧 BLUE PENGUIN — POST À VALIDER
@@ -111,20 +111,12 @@ ACCROCHES ALTERNATIVES
 2. ...
 
 CTA : ...
-Visuel : [BP:...:VISUAL] dans #tsiory-daily
+Visuel : joint (fichiers : ... ; variantes dans le fil)
+Contrôles : HyperFrames check OK · contact-sheet lue · son : X LUFS / crête Y dBFS (stéréo et mono) · à écouter : t1, t2, t3 (pour un PNG : « Contrôles studio : OK »)
 Validation : ✅ ou ✏️ en fil
 ```
 Marqueurs : `[BP:CASUSAGE:UCxx:LINKEDIN]`, `[BP:TUTO:TUTO-xxx:INSTAGRAM]`, `[BP:RECOMPENSE:AAAA-MM-JJ:INSTAGRAM]`, `[BP:COMMUNAUTE:AAAA-MM-JJ:INSTAGRAM]`, `[BP:MATCHDAY:AAAA-MM-JJ:HCC-ADVERSAIRE:INSTAGRAM]`, `[BP:PRODUIT:M1|M2|M3:LINKEDIN]`.
 
-VISUEL (`initial_comment` dans `C0BNJUMF4H2`) :
-```
-[BP:...:VISUAL]
-🐧 BLUE PENGUIN — VISUEL
-Pour le post : [BP:...]
-Fichiers : ...
-Contrôles : HyperFrames check OK · contact-sheet lue · son : X LUFS / crête Y dBFS (stéréo et mono) · à écouter : t1, t2, t3
-```
-(pour un PNG : « Contrôles studio : OK »)
 
 ## ATELIER (visuels)
 
@@ -148,7 +140,7 @@ npx --yes hyperframes@0.9.41 render -o renders/_brut.mp4
 node ../hyperframes/bp_finalise.js renders/_brut.mp4 renders/BP_CASUSAGE_AAAA-MM-JJ_UCxx
 ```
 Le gabarit est figé : tu ne changes que les données, la photo et, si la valeur n'a pas de décimale, `DATA.decimals` (et le suffixe « % » dans `#fig` si l'unité change : CHF, ×, comptes…). Garde les sons et leurs temps ; si le compteur dure autrement, recale les `<audio>` tick et ding sur l'arrivée du chiffre. Un chiffre-texte (« 5 à 25× », « Top 20 ») : remplace le compteur par l'apparition du texte (supprime l'onUpdate) et garde le ding à l'apparition.
-**Secours** si HyperFrames échoue après 2 essais : `studio/exemples/chiffre.js` (format 'motion' de bp_studio.js, mêmes sons) puis `bp_finalise.js` n'est pas nécessaire (le studio écrit déjà `_son.mp4`, GIF et miniature) ; signale-le dans le message VISUEL.
+**Secours** si HyperFrames échoue après 2 essais : `studio/exemples/chiffre.js` (format 'motion' de bp_studio.js, mêmes sons) puis `bp_finalise.js` n'est pas nécessaire (le studio écrit déjà `_son.mp4`, GIF et miniature) ; signale-le dans le message du post.
 
 Nommage : `BP_<FAMILLE>_<AAAA-MM-JJ>_<DETAIL>[_<RESEAU>]` + extension (date de publication conseillée).
 
