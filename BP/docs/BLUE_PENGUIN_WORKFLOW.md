@@ -52,8 +52,8 @@ Claude : choisit les sujets (§4), vérifie les chiffres (§6), rédige (§7)
 | Jour | Réseau | Famille | Visuel |
 |---|---|---|---|
 | Mardi | LinkedIn (+ Reel IG adapté si pertinent) | **Cas d'usage chiffré** (série UC01 → UC12) | **Motion** MP4 + GIF + son |
-| Jeudi | Instagram | **Tuto fan** ou **Récompense** | PNG |
-| Jour de match HCC à domicile | Instagram (story + feed) | **Match day** : « Scanne ton billet » | PNG (story animée possible) |
+| Jeudi | Instagram | **Tuto fan** ou **Récompense** | **Motion** (Reel) |
+| Jour de match HCC à domicile | Instagram (story + feed) | **Match day** : « Scanne ton billet » | **Motion** (Reel + story animée) |
 
 Si pas de match à domicile dans la semaine : remplacer par **Produit** (M1 authentification / M3 collectibles & enchères) côté LinkedIn, ou **Communauté** (sondage, niveaux) côté Instagram.
 
@@ -128,7 +128,7 @@ Règles de caption :
 
 ## 8. Visuels joints au post (#blue-penguin C09CAC4DNJC)
 
-Le message du post (§7) est l'`initial_comment` du visuel principal (PNG, ou `_son.mp4` pour un motion). Les variantes d'un motion (`.mp4` muet, `_720.gif`, `_miniature.jpg`) et une Story éventuelle sont envoyées dans le fil de ce message.
+Le message du post (§7) est l'`initial_comment` du visuel principal (`_son.mp4` ; un PNG seulement en secours). Les variantes d'un motion (`.mp4` muet, `_720.gif`, `_miniature.jpg`) et une Story éventuelle sont envoyées dans le fil de ce message.
 
 ## 9. Production des visuels
 
@@ -136,7 +136,7 @@ Skill **`blue-penguin-studio`** (`~/.claude/skills/blue-penguin-studio/SKILL.md`
 
 - **Motion → HyperFrames** : gabarit `hyperframes/bp-chiffre`, puis `hyperframes/bp_finalise.js`. Sert au cas d'usage chiffré de la semaine et aux stories match day. Livrables : `_son.mp4`, `.mp4` muet, `_720.gif`, `_miniature.jpg`.
 - **Son → bibliothèque CC0 Barty-Bart** (`sound-kit/sfx`, 103 sons, avec manifest et licences). Les sons sont posés en `<audio>` dans la composition, et le niveau est mesuré sur le MP4 exporté.
-- **PNG → `studio/bp_studio.js`** : tout le reste.
+- **Motion studio → `studio/bp_studio.js`** (`format: 'motion'`) : tout le reste. Depuis le 23.11.2026 (test à partir de W49), plus aucun post statique ; le format `png` ne sert qu'en secours si le rendu motion échoue 2 fois.
 
 ## 9 bis. Metricool
 
@@ -144,7 +144,7 @@ Skill **`blue-penguin-studio`** (`~/.claude/skills/blue-penguin-studio/SKILL.md`
 - **Seulement après le ✅ dans Slack** : `createScheduledPost` avec `draft: true` (brouillon), à la date du créneau conseillé (`getBestTimeToPostByNetwork`). Le lien du brouillon (`plannerUrl`) est posté en réponse dans le fil Slack du post.
 - **Médias** : URL publique, Dropbox ou Google Drive. Metricool n'accepte pas de fichier local. Le dossier Dropbox Blue Penguin reste à définir.
 - **Instagram Reel** : `type: "REEL"`, vidéo `_son.mp4`, `videoThumbnailUrl` = la miniature, et `isAiGenerated: true` si la photo est générée.
-- **LinkedIn** : le `.mp4` muet ou le PNG.
+- **LinkedIn** : le `.mp4` muet (le PNG seulement s'il a servi de secours).
 - Jamais d'`autoPublish` sans accord explicite.
 
 ## 10. Décisions (13.11.2026)

@@ -11,7 +11,7 @@ Tout se trouve dans `C:\Users\randr\Claude\BluePenguin\`, à l'écart de GriddyP
 |---|---|
 | `hyperframes/bp-chiffre/` | **gabarit motion HyperFrames** « Chiffre clé » (feed 1080×1350, 7 s, avec son) |
 | `hyperframes/bp_finalise.js` | finalisation : son normalisé, version muette, GIF 720, miniature, mesure LUFS |
-| `studio/bp_studio.js` + `studio/exemples/` | **visuels fixes PNG** (`tuto.js` sur fond blanc, `linkedin.js` en paysage) |
+| `studio/bp_studio.js` + `studio/exemples/` | **motion studio** (`format: 'motion'`, mises en page `tuto.js` / `linkedin.js`, animation et sons de `chiffre.js`) ; PNG seulement en secours |
 | `assets/` | logos (`logo_cyan` / `logo_blanc` / `logo_navy`), symbole, fan card, `elements/` (médailles, icônes), `photos/` (sans texte) |
 | `sound-kit/sfx/` | **bibliothèque CC0 Barty-Bart** : 103 sons, `manifest.json`, `LICENSES_sons_CC0.md`, `TOP-PICKS.md` |
 | `docs/BLUE_PENGUIN_WORKFLOW.md` | calendrier, Slack, sources, Metricool |
@@ -24,7 +24,7 @@ Ne jamais écrire de fichier Blue Penguin dans `Claude\GriddyPicks\`, et inverse
 | Contenu | Outil | Livrables |
 |---|---|---|
 | Cas d'usage chiffré de la semaine (Reel + vidéo LinkedIn), stories match day | **HyperFrames** | `_son.mp4`, `.mp4` muet, `_720.gif`, `_miniature.jpg` |
-| Tuto, récompense, communauté, carte LinkedIn | `bp_studio.js` (format `png`) | `.png` en 2x |
+| Tuto, récompense, communauté, match day, produit LinkedIn (depuis le 23.11.2026 : plus aucun post statique) | `bp_studio.js` (format `motion`, 6-7 s, message lisible avant 1 s) | `_son.mp4`, `.mp4` muet, `_720.gif`, `_miniature.jpg` (PNG en secours seulement, signalé « ⚠️ SECOURS PNG ») |
 
 ## Motion avec HyperFrames : la boucle de travail
 
@@ -120,7 +120,7 @@ Identité Blue Penguin : **une « validation » chaleureuse**, pas le son gaming
    - outil `createScheduledPost` avec **`draft: true`** : on crée un brouillon, l'humain publie. Jamais `autoPublish` sans accord explicite ;
    - `media` doit être une **URL publique, Dropbox ou Google Drive**, pas un fichier local ;
    - un Reel se programme avec `instagramData.type: "REEL"` et la vidéo `_son.mp4`, plus `videoThumbnailUrl` (la miniature) ;
-   - sur LinkedIn, on envoie le `.mp4` muet ou le PNG ;
+   - sur LinkedIn, on envoie le `.mp4` muet (le PNG seulement s'il a servi de secours) ;
    - `isAiGenerated: true` sur Instagram dès qu'une photo générée est utilisée.
 
 ## Avant d'envoyer : liste de contrôle

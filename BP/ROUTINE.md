@@ -22,9 +22,9 @@ Semaine cible : si on est lundi, la semaine en cours ; sinon (lancement manuel),
 
 1. **Mardi 8h30 — LinkedIn — CAS D'USAGE chiffré — MOTION (HyperFrames)**
    Le prochain cas d'usage de la série UC01 → UC12 jamais publié (ordre : 01, 02, 03, 04…10, 11, 12 ; tableau sourcé : `BP/docs/README_cas-usage-HCC.md`). Quand les 12 sont publiés, reprends le plus ancien avec un nouvel angle. Le même MP4 sert de Reel Instagram (proposer une légende IG courte en plus).
-2. **Jeudi 18h00 — Instagram — FAN** (PNG) : alterne TUTO (comment marchent les points, les niveaux, l'app) / RÉCOMPENSE (lots, Soirée Blue Penguin, Top 20 **sans aucun nom**) / COMMUNAUTÉ (sondage, question). Jamais deux fois le même format de suite.
-3. **Créneau 3** (PNG) :
-   - s'il y a un **match du HCC à domicile** dans la semaine cible (vérifié sur le calendrier officiel https://www.hccnet.ch/saison/calendrier/ et/ou https://www.sihf.ch) : **MATCH DAY Instagram**, publication le jour du match à 12h00, « scanne ton billet, gagne tes points ». **Deux matchs à domicile** : le post feed va au match du vendredi, samedi ou dimanche ; pour l'autre match, produis en plus une **Story 1080×1920** (`taille: 'story'`), signalée « Story seule, publication manuelle » dans le message du post (elle ne compte pas dans les 3 posts) ;
+2. **Jeudi 18h00 — Instagram — FAN — MOTION (Reel)** : alterne TUTO (comment marchent les points, les niveaux, l'app) / RÉCOMPENSE (lots, Soirée Blue Penguin, Top 20 **sans aucun nom**) / COMMUNAUTÉ (sondage, question). Jamais deux fois le même format de suite.
+3. **Créneau 3 — MOTION** :
+   - s'il y a un **match du HCC à domicile** dans la semaine cible (vérifié sur le calendrier officiel https://www.hccnet.ch/saison/calendrier/ et/ou https://www.sihf.ch) : **MATCH DAY Instagram**, publication le jour du match à 12h00, « scanne ton billet, gagne tes points ». **Deux matchs à domicile** : le post feed va au match du vendredi, samedi ou dimanche ; pour l'autre match, produis en plus une **Story animée 1080×1920** (`taille: 'story'`, format 'motion'), signalée « Story seule, publication manuelle » dans le message du post (elle ne compte pas dans les 3 posts) ;
    - sinon : **PRODUIT LinkedIn**, vendredi 8h30, en rotation M1 authentification certifiée → M3 collectibles & enchères → M2 récompenser la fidélité (voir `BP/docs/README_kit-photo-v2.md`).
 
 Créneau déjà passé au moment du run : ne le compte pas.
@@ -63,13 +63,13 @@ Si l'historique Slack montre qu'un UC prévu est déjà publié, prends le suiva
    - LinkedIn : 600 à 1 200 caractères ; 2 premières lignes = accroche (avant « voir plus ») ; 1 chiffre + sa source ; 1 CTA (« Découvrir la solution → bluepenguin.ch ») ; 3 hashtags max.
    - Instagram : 150 à 400 caractères ; 1 CTA (lien en bio) ; 3 à 5 hashtags.
    - Texte brut prêt à copier (pas d'astérisques), plus 2 accroches alternatives.
-7. **Visuels** — atelier `/tmp/bpstudio`, voir la section ATELIER ci-dessous. Après chaque rendu, **ouvre l'image de contrôle** (contact-sheet HyperFrames ou PNG) avec l'outil de lecture d'image : bons chiffres, bonne source, logo en bas à droite et dans la bonne couleur, rien de coupé, pas de texte blanc sur cyan. Défaut → corrige et relance (2 essais max). Échec persistant → envoie le post avec un brief visuel texte à la place du fichier et dis-le.
+7. **Visuels** — atelier `/tmp/bpstudio`, voir la section ATELIER ci-dessous. Après chaque rendu, **ouvre l'image de contrôle** (contact-sheet HyperFrames, ou image de contrôle et image à 1 s du studio) avec l'outil de lecture d'image : bons chiffres, bonne source, logo en bas à droite et dans la bonne couleur, rien de coupé, pas de texte blanc sur cyan. Défaut → corrige et relance (2 essais max). Échec persistant en motion → secours PNG (voir ATELIER) ; si le PNG échoue aussi, envoie le post avec un brief visuel texte à la place du fichier et dis-le.
 8. **Envoi Slack** (connecteur Slack ; charge les outils avec ToolSearch s'ils sont différés) :
    a. **RAPPEL via Blue Penguin Bot** (webhook entrant vers #blue-penguin, pour que l'opérateur reçoive la notification — les messages du connecteur partent en son nom et ne le notifient pas). L'URL du webhook est donnée dans le prompt de la routine (`BP_WEBHOOK`) : **ne jamais l'afficher, la journaliser ni l'écrire dans un fichier ou un message**. Envoi :
       `python3 -c "import json,sys;print(json.dumps({'text':open(sys.argv[1]).read()}))" rappel.txt | curl -sS -X POST -H 'Content-type: application/json' --data @- "$BP_WEBHOOK"` (réponse attendue : `ok`).
       Le texte commence par `<@U08UHGCA727>` (format RAPPEL). Échec du webhook → envoie le RAPPEL avec le connecteur et signale-le à la fin.
    b. **Posts complets** dans `C09CAC4DNJC` (#blue-penguin), après le RAPPEL : **un message par post contenant le texte ET le visuel**. **Plus rien n'est envoyé dans #tsiory-daily (`C0BNJUMF4H2`)** : ni alerte, ni visuel, ni texte.
-      - Visuel principal joint au message du post : slack_get_file_upload_url (nom + taille exacte en octets) → POST des octets avec curl sur l'URL rendue (Content-Type image/png, video/mp4, image/gif ou image/jpeg) → slack_complete_file_upload avec `channel_id: C09CAC4DNJC` et `initial_comment` = le message complet au format POST. Visuel principal : le PNG ; pour un motion, `_son.mp4`.
+      - Visuel principal joint au message du post : slack_get_file_upload_url (nom + taille exacte en octets) → POST des octets avec curl sur l'URL rendue (Content-Type image/png, video/mp4, image/gif ou image/jpeg) → slack_complete_file_upload avec `channel_id: C09CAC4DNJC` et `initial_comment` = le message complet au format POST. Visuel principal : le `_son.mp4` (le PNG seulement en secours).
       - Fichiers secondaires d'un motion (`.mp4` muet, `_720.gif`, `_miniature.jpg`) et Story éventuelle : retrouve le `ts` du message du post (slack_read_channel sur `C09CAC4DNJC`, marqueur `[BP:...]`), puis envoie-les **dans le fil** de ce message (même flux d'upload, avec `thread_ts`). Fichier > 50 Mo : n'envoie que le `_son.mp4` et la miniature.
       - Échec d'upload après 2 essais → envoie le post en texte (slack_send_message) avec un brief visuel à la place du fichier et signale-le.
 9. **Metricool (posts validés uniquement)** — marque « Blue Penguin », blogId `7424422`, fuseau Europe/Zurich.
@@ -88,8 +88,8 @@ RAPPEL (premier message dans `C09CAC4DNJC`, via Blue Penguin Bot) :
 <@U08UHGCA727> 🐧 *Blue Penguin — posts de la semaine du lundi JJ au dimanche JJ mois AAAA*
 Les 3 posts sont prêts à valider ci-dessous, visuels joints (✅ ou ✏️ en fil).
 1. mardi JJ.MM, 8h30 · LinkedIn · Cas d'usage UCxx · motion
-2. jeudi JJ.MM, 18h00 · Instagram · TUTO / RÉCOMPENSE / COMMUNAUTÉ · PNG
-3. ... · MATCH DAY ou PRODUIT · PNG
+2. jeudi JJ.MM, 18h00 · Instagram · TUTO / RÉCOMPENSE / COMMUNAUTÉ · motion
+3. ... · MATCH DAY ou PRODUIT · motion
 Match HCC à domicile : ... (ou « aucun »)
 Metricool : N brouillon(s) créé(s) pour les posts validés (ou « aucun »).
 ```
@@ -112,7 +112,7 @@ ACCROCHES ALTERNATIVES
 
 CTA : ...
 Visuel : joint (fichiers : ... ; variantes dans le fil)
-Contrôles : HyperFrames check OK · contact-sheet lue · son : X LUFS / crête Y dBFS (stéréo et mono) · à écouter : t1, t2, t3 (pour un PNG : « Contrôles studio : OK »)
+Contrôles : HyperFrames check OK · contact-sheet lue · son : X LUFS / crête Y dBFS (stéréo et mono) · à écouter : t1, t2, t3 (motion studio : « Contrôles studio : image à 1 s et contrôle lus · son : X LUFS / crête Y dBFS » ; secours PNG : « ⚠️ SECOURS PNG : motion en échec (cause) »)
 Validation : ✅ ou ✏️ en fil
 ```
 Marqueurs : `[BP:CASUSAGE:UCxx:LINKEDIN]`, `[BP:TUTO:TUTO-xxx:INSTAGRAM]`, `[BP:RECOMPENSE:AAAA-MM-JJ:INSTAGRAM]`, `[BP:COMMUNAUTE:AAAA-MM-JJ:INSTAGRAM]`, `[BP:MATCHDAY:AAAA-MM-JJ:HCC-ADVERSAIRE:INSTAGRAM]`, `[BP:PRODUIT:M1|M2|M3:LINKEDIN]`.
@@ -124,11 +124,18 @@ Marqueurs : `[BP:CASUSAGE:UCxx:LINKEDIN]`, `[BP:TUTO:TUTO-xxx:INSTAGRAM]`, `[BP:
 mkdir -p /tmp/bpstudio && cp -r BP /tmp/bpstudio/BP && cd /tmp/bpstudio/BP
 # ffmpeg + ffprobe (HyperFrames en a besoin)
 command -v ffprobe || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg) || (apt-get update -qq && apt-get install -y -qq ffmpeg)
-# studio PNG
+# studio (motion, PNG de secours)
 cd studio && npm init -y >/dev/null && npm i @fontsource/outfit @fontsource/inter playwright >/dev/null && npx playwright install chromium >/dev/null; cd ..
 ```
 
-**PNG** (créneaux 2 et 3) : écris `studio/post_N.js` sur le modèle de `studio/exemples/tuto.js` (fond blanc + aplat cyan, `logo: 'logo_navy.png'` si le logo tombe sur le cyan) ou `studio/exemples/linkedin.js` (`taille: 'linkedin'` pour LinkedIn, sinon `feed`). Rendu : `node studio/bp_studio.js studio/post_N.js`. Toute alerte (TEXTE TROP LONG, TITRE TROP LONG, IMAGES NON CHARGEES, POLICES…) = corrige et relance.
+**Règle depuis le 23.11.2026 (test à partir de W49) : plus aucun post statique.** Les 3 créneaux (et la Story match day éventuelle) sont livrés en motion : `_son.mp4` (visuel principal), `.mp4` muet, `_720.gif`, `_miniature.jpg`. Le PNG n'est plus un format choisi : c'est seulement le secours décrit plus bas.
+
+**MOTION STUDIO** (créneaux 2 et 3) : écris `studio/post_N.js` avec `format: 'motion'`, `dur: 6` ou `7` (jamais plus de 7), sur la mise en page de `studio/exemples/tuto.js` (fond blanc + aplat cyan, `logo: 'logo_navy.png'` si le logo tombe sur le cyan) ou `studio/exemples/linkedin.js` (`taille: 'linkedin'` pour le PRODUIT LinkedIn, `story` pour la Story, sinon `feed`), et anime-la avec les fonctions et la palette son de `studio/exemples/chiffre.js` (`intro`, `up`, `count`, `outro`, `sons`). Seule l'apparition est animée : même charte, même texte, mêmes chiffres.
+- Première seconde : le titre est visible dès la première image ; avant t = 1,0 s, le message principal est lisible en entier (TUTO : titre + étape 1, puis une étape toutes les 0,5 s ; RÉCOMPENSE : titre + lot ou chiffre principal ; COMMUNAUTÉ : la question complète, puis les choix un par un toutes les 0,2 s, aucun mis en avant ; MATCH DAY : affiche du match + « scanne ton billet » ; PRODUIT : titre + bénéfice principal). Outro vers 2,5 à 3 s, image finale tenue jusqu'à la fin.
+- Rendu : `node studio/bp_studio.js studio/post_N.js`. Toute alerte (TEXTE TROP LONG, TITRE TROP LONG, IMAGES NON CHARGEES, POLICES…) = corrige et relance.
+- Contrôle : ouvre l'image de contrôle écrite par le studio, et extrais l'image à 1 s : `ffmpeg -y -loglevel error -ss 1 -i FICHIER.mp4 -frames:v 1 FICHIER_1s.png`, puis ouvre-la : titre et message principal complets. Mesure le son du `_son.mp4` (LUFS, crête) et donne les chiffres dans le message.
+
+**Secours PNG** : si le rendu motion d'un post échoue 2 fois (rendu, ffmpeg, ou contrôle à 1 s toujours faux), rends le même post en `format: 'png'` pour ne pas laisser de trou, et écris dans le message du post « ⚠️ SECOURS PNG : motion en échec » avec la cause en une phrase. L'opérateur peut demander une relance en fil.
 
 **MOTION** (créneau 1) — HyperFrames :
 ```bash
