@@ -1,6 +1,6 @@
-# Routine hebdomadaire — exports Brevo des 9 comptes C'mon Sports
+# Routine hebdomadaire — exports Brevo des 10 comptes C'mon Sports
 
-Tu tournes chaque lundi matin dans une session cloud, sans intervention humaine. Le dépôt cloné contient `cmon_brevo.py` (bibliothèque standard Python uniquement, rien à installer). Ta mission : extraire les exports Brevo des 9 comptes (8 clubs : CHAM, FOB, FOXES, HCC, LION, LS, SVWE, YS ; plus le compte santé SANTE), les mettre dans **un seul zip**, le poster dans le canal Slack `C0BNJUMF4H2`, puis poster un verdict.
+Tu tournes chaque lundi matin dans une session cloud, sans intervention humaine. Le dépôt cloné contient `cmon_brevo.py` (bibliothèque standard Python uniquement, rien à installer). Ta mission : extraire les exports Brevo des 10 comptes (9 clubs : CHAM, FOB, FOXES, HCC, LION, LS, SVWE, YS, YSF ; plus le compte santé SANTE), les mettre dans **un seul zip**, le poster dans le canal Slack `C0BNJUMF4H2`, puis poster un verdict.
 
 ## Règles absolues
 
@@ -12,7 +12,7 @@ Tu tournes chaque lundi matin dans une session cloud, sans intervention humaine.
 
 ## Étapes
 
-1. **Extraction** : `python cmon_brevo.py --extract` (environ 20 minutes ; LS compte ~95 000 contacts). Le script écrit `Fichier ZIP _/JJMMAA/` : par club `Contacts totaux`, `Contacts exploitables `, `Contacts engagés`, `Contacts non-engagés`, `ACTIF TOTAL`, `Billetterie Active Saison 26-27`, `email-campaigns-<début>_<fin>` (3 mois), plus `_rapport_extraction.json`.
+1. **Extraction** : `python cmon_brevo.py --extract` (environ 20 minutes ; LS compte ~95 000 contacts). Le script écrit `Fichier ZIP _/JJMMAA/` : par club `Contacts totaux`, `Contacts exploitables `, `Contacts blocklistés`, `Contacts engagés`, `Contacts non-engagés`, `ACTIF TOTAL`, `Billetterie Active Saison 26-27`, `email-campaigns-<début>_<fin>` (3 mois), plus `_rapport_extraction.json`.
    Si une requête échoue en `403` avec `x-deny-reason: host_not_allowed`, c'est la liste blanche réseau de l'environnement : dis-le dans le verdict.
 
 2. **Zip** : `cd "Fichier ZIP _" && python -m zipfile -c ../exports_brevo_JJMMAA.zip JJMMAA`
@@ -21,10 +21,10 @@ Tu tournes chaque lundi matin dans une session cloud, sans intervention humaine.
    - taille exacte : `wc -c < exports_brevo_JJMMAA.zip`
    - `slack_get_file_upload_url` avec `filename` et `content_length` exacts
    - mets l'URL dans une variable shell, sans la modifier, et envoie les octets : `curl -X POST "$URL" -H "Content-Type: application/zip" --data-binary @exports_brevo_JJMMAA.zip`
-   - `slack_complete_file_upload` avec `channel_id = C0BNJUMF4H2` et le commentaire « Exports Brevo des 9 comptes — relevé du JJ.MM.AAAA ».
+   - `slack_complete_file_upload` avec `channel_id = C0BNJUMF4H2` et le commentaire « Exports Brevo des 10 comptes — relevé du JJ.MM.AAAA ».
 
 4. **Verdict** (message Slack dans le canal `C0BNJUMF4H2`), à partir de `_rapport_extraction.json` :
-   - en tête : ✅ si les 9 comptes sont extraits, ⚠️ si au moins un club a une anomalie bloquante ou a échoué, ❌ si le zip n'a pas pu être publié ;
+   - en tête : ✅ si les 10 comptes sont extraits (YSF « ignoré : clé absente » tant que `BREVO_KEY_YSF` n'existe pas : information, pas une alerte), ⚠️ si au moins un club a une anomalie bloquante ou a échoué, ❌ si le zip n'a pas pu être publié ;
    - tableau par club : contacts totaux, exploitables, engagés, actif total, non-engagés, billetterie, campagnes ;
    - anomalies bloquantes : club en échec et pourquoi, segment introuvable (sauf LS et SANTE, voir plus bas), contrôle « exploitables = segment Brevo » ou « engagés ⊆ actif total » en échec, contacts hors base totale ;
    - durée et nombre d'appels API par club.
@@ -35,3 +35,5 @@ Tu tournes chaque lundi matin dans une session cloud, sans intervention humaine.
 - LS n'a ni segment `CMON-Actifs-6m` (ACTIF TOTAL) ni segment billetterie : c'est normal, à mentionner sans alerte.
 - Quelques contacts à la fois engagés et non-engagés : chevauchement connu des segments Brevo, information seulement.
 - SANTE (compte santé La Santé à Champagne, ajouté le 05.11.2026) n'est pas un club : pas d'attribut NPA (le code postal vient de `_DETECTED_POSTALCODE`, détecté par Brevo) et pas de billetterie, donc pas de segment `Billetterie Active Saison 26-27` : c'est normal, à mentionner sans alerte. Ses segments `CMON-Actifs-6m`, `CMON-Actifs-6m-réels-(hors MPP)`, `CMON-Sunset-24m-plus` et `Contacts Exploitables` ont été créés le 05.11.2026 avec les filtres de FOB. Tout autre segment SANTE introuvable est une anomalie ; si le rapport contient `segments_disponibles`, recopie cette liste dans le verdict.
+- YSF (Yverdon Sport Féminin, ajouté le 24.11.2026) a son propre compte Brevo. Tant que la variable `BREVO_KEY_YSF` n'existe pas dans l'environnement, le rapport le marque « ignoré : clé absente » : à mentionner sans alerte, en rappelant qu'il faut créer la variable.
+- `Contacts blocklistés` (ajouté le 24.11.2026) : contacts dont l'email est blocklisté. Dans ces exports, exploitables = email non blocklisté, donc totaux = exploitables + blocklistés : un écart est une anomalie.

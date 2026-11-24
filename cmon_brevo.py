@@ -37,7 +37,48 @@ EXPECTED_ATTRS = {
     "SVWE":  {"NPA": "NPA", "ANNIVERSAIRE": "AX_BIRTHDAY", "CMON_SCORE": "CMON_SCORE", "CMON_SCORE_26_27": "CMON_SCORE_26_27"},
     "YS":    {"NPA": "AX_ZIP_CODE", "ANNIVERSAIRE": "AX_BIRTHDATE", "CMON_SCORE": "CMON_SCORE", "CMON_SCORE_26_27": "CMON_SCORING_26_27"},
     "SANTE": {"NPA": "_DETECTED_POSTALCODE", "ANNIVERSAIRE": "ANNIVERSAIRE", "CMON_SCORE": "CMON_SCORE", "CMON_SCORE_26_27": None},  # pas de NPA saisi : code postal détecté par Brevo
+    "YSF":   {"NPA": "AX_ZIP_CODE", "ANNIVERSAIRE": "AX_BIRTHDATE", "CMON_SCORE": "CMON_SCORE", "CMON_SCORE_26_27": "CMON_SCORING_26_27"},  # Yverdon Sport Féminin, compte Brevo propre (ajout 24.11.2026)
 }
+
+# --base-mois : dépôt direct dans <Dossier club>\base\<mois>\ des dashboards Looker (prompt MAJ DASHBOARDS, point 6)
+DASHBOARDS_ROOT = Path(r"D:\CMON PROJECT\cmon sport\new dashboard club 2627")
+CLUB_BASE = {  # {mois} tel que passé, {MOIS} en majuscules
+    "HCC":   "Dashboard HCC/base/{mois}",
+    "CHAM":  "Dashboards Chamonix/base/{mois}",
+    "FOB":   "Dashboards FOB/base/{mois}",
+    "FOXES": "Dashboards Foxes/base/{mois}",
+    "LS":    "Dashboards LS/LS BASE/{MOIS}",
+    "SVWE":  "Dashboards SVWE/base/{mois}",
+    "YS":    "Dashboards Yverdon-Sport/base/{mois}/ys",
+    "YSF":   "Dashboards Yverdon-Sport/base/{mois}/ysf",
+    "LION":  "LIONS - Data à uploader/{MOIS}",
+    "SANTE": "Dashboards La Santé/base/{mois}",
+}
+# noms attendus au point 6 du prompt (motifs « contact totaux*.csv », « contact exploitable*.csv »)
+BASE_NAMES = {
+    "Contacts totaux": "contact totaux {c}.csv",
+    "Contacts exploitables": "contact exploitable {c}.csv",
+    "Contacts blocklistés": "contact blocklistés {c}.csv",
+    "Contacts engagés": "CMON-Actifs-6m-réels-(hors MPP) {c}.csv",
+    "Contacts non-engagés": "CMON-Sunset-24m-plus {c}.csv",
+    "ACTIF TOTAL": "CMON-Actifs-6m {c}.csv",
+    "Billetterie Active Saison 26-27": "Billetterie Active Saison 26-27 {c}.csv",
+}
+
+
+def safe_path(p):
+    """Ne jamais écraser : si le fichier existe, suffixe _v2, _v3…"""
+    p = Path(p)
+    if not p.exists():
+        return p
+    n = 2
+    while (q := p.with_name(f"{p.stem}_v{n}{p.suffix}")).exists():
+        n += 1
+    return q
+
+
+def base_dir(club, mois, root=DASHBOARDS_ROOT):
+    return Path(root) / CLUB_BASE[club].format(mois=mois, MOIS=mois.upper())
 COMMON_ATTRS = ["NOM", "PRENOM", "SMS", "OPT_IN"]
 
 # §6.1 — exports cibles et mots-clés de rapprochement (normalisés, sans accents)
@@ -310,6 +351,7 @@ EXPLOITABLES_CONTROL = "Contacts Exploitables"
 OUT_NAMES = {
     "Contacts totaux": "{c} Contacts totaux.csv",
     "Contacts exploitables": "{c} Contacts exploitables .csv",
+    "Contacts blocklistés": "{c} Contacts blocklistés.csv",
     "Contacts engagés": "{c} Contacts engagés.csv",
     "Contacts non-engagés": "{c} Contacts non-engagés.csv",
     "Billetterie Active Saison 26-27": "{c} Billetterie Active Saison 26-27.csv",
@@ -456,7 +498,9 @@ def write_csv(path, header, rows):
         w.writerows(rows)
 
 
-def extract_club(club, key, outdir, camp_start, camp_end):
+def extract_club(club, key, outdir, camp_start, camp_end, names=None):
+    """names : correspondance fichier -> nom de sortie (OUT_NAMES par défaut, BASE_NAMES avec --base-mois)."""
+    names = names or OUT_NAMES
     t0 = time.time()
     api = Brevo(club, key)
     rep = {"club": club, "fichiers": {}, "anomalies": [], "controles": {}}
@@ -485,7 +529,8 @@ def extract_club(club, key, outdir, camp_start, camp_end):
     contacts = pull_contacts(api)
     total = {str(c["id"]): to_row(c, meta) for c in contacts}
     rows_by_file = {"Contacts totaux": list(total.values()),
-                    "Contacts exploitables": [r for r in total.values() if "email_marketing" in r["_SUBSCRIBED"]]}
+                    "Contacts exploitables": [r for r in total.values() if "email_marketing" in r["_SUBSCRIBED"]],
+                    "Contacts blocklistés": [r for r in total.values() if "email_marketing" in r["_BLOCKLISTED"]]}
 
     segs = {(s.get("segmentName") or s.get("name")): s["id"] for s in api.paged("/contacts/segments", "segments")}
     if not set(SEGMENTS.values()) <= set(segs):  # noms attendus manquants : liste complète pour ajuster SEGMENTS
@@ -521,14 +566,16 @@ def extract_club(club, key, outdir, camp_start, camp_end):
             rep["anomalies"].append(f"{len(both)} contact(s) à la fois engagé et non-engagé (IDs {', '.join(sorted(both))}) — recalcul de segment côté Brevo probable")
 
     for kind, rows in rows_by_file.items():
-        name = OUT_NAMES[kind].format(c=club)
-        write_csv(outdir / name, header, rows)
-        rep["fichiers"][name] = len(rows)
+        p = safe_path(outdir / names[kind].format(c=club))
+        write_csv(p, header, rows)
+        rep["fichiers"][p.name] = len(rows)
 
     camps = extract_campaigns(api, camp_start, camp_end)
-    cname = f"{club} email-campaigns-{camp_start:%Y-%m-%d}_{camp_end:%Y-%m-%d}.csv"
-    write_csv(outdir / cname, CAMPAIGN_COLS, camps)
-    rep["fichiers"][cname] = len(camps)
+    cname = (f"email-campaigns-{camp_start:%Y-%m-%d}_{camp_end:%Y-%m-%d}.csv" if names is BASE_NAMES
+             else f"{club} email-campaigns-{camp_start:%Y-%m-%d}_{camp_end:%Y-%m-%d}.csv")
+    p = safe_path(outdir / cname)
+    write_csv(p, CAMPAIGN_COLS, camps)
+    rep["fichiers"][p.name] = len(camps)
 
     rep["contact_le_plus_recent"] = max((c.get("createdAt") or "" for c in contacts), default=None)
     rep["appels_api"] = api.calls
@@ -536,7 +583,9 @@ def extract_club(club, key, outdir, camp_start, camp_end):
     return rep
 
 
-def extract(clubs, keys, outdir, camp_days):
+def extract(clubs, keys, outdir, camp_days, base_mois=None):
+    """base_mois : si renseigné, chaque club écrit dans base_dir(club, base_mois) avec BASE_NAMES ;
+    le rapport reste dans outdir."""
     outdir.mkdir(parents=True, exist_ok=True)
     end = datetime.now()
     start = datetime.fromordinal(end.toordinal() - camp_days)
@@ -544,10 +593,16 @@ def extract(clubs, keys, outdir, camp_days):
                "fenetre_campagnes": f"{start:%Y-%m-%d} → {end:%Y-%m-%d}", "clubs": {}}
     for club in clubs:
         if club not in keys:
-            rapport["clubs"][club] = {"statut": "ignoré", "raison": "absent de brevo_keys.json"}
+            rapport["clubs"][club] = {"statut": "ignoré", "raison": f"clé absente (variable BREVO_KEY_{club} ou brevo_keys.json)"}
             continue
         try:
-            r = extract_club(club, keys[club], outdir, start, end)
+            if base_mois:
+                d = base_dir(club, base_mois)
+                d.mkdir(parents=True, exist_ok=True)
+                r = extract_club(club, keys[club], d, start, end, names=BASE_NAMES)
+                r["dossier"] = str(d)
+            else:
+                r = extract_club(club, keys[club], outdir, start, end)
             r["statut"] = "ok" if not r["anomalies"] else "ok avec anomalies"
         except Exception as e:  # un club en échec n'arrête jamais les autres
             r = {"statut": "échec", "erreur": str(e) if isinstance(e, BrevoError) else f"{type(e).__name__}: {e}"}
@@ -566,7 +621,9 @@ def main():
     ap.add_argument("--club", default=None, help="un seul club (défaut : SVWE en discover, tous en extract)")
     ap.add_argument("--test-export", action="store_true", help="tester aussi POST /contacts/export (asynchrone)")
     ap.add_argument("--campaign-days", type=int, default=91, help="fenêtre newsletters (spec : 3 mois glissants)")
-    ap.add_argument("--campaigns-only", action="store_true", help="ne recharger que les exports campagnes")
+    ap.add_argument("--campaigns-only", action="store_true", help="ne recharger que les exports campagnes (ex. --campaign-days 365)")
+    ap.add_argument("--base-mois", default=None,
+                    help="dépose les exports dans <Dossier club>\\base\\<mois>\\ des dashboards Looker (ex. dec), noms du point 6")
     a = ap.parse_args()
     keys = load_keys()
     if a.extract:
@@ -577,14 +634,17 @@ def main():
             start = datetime.fromordinal(end.toordinal() - a.campaign_days)
             for club in clubs:
                 if club not in keys:
+                    print(f"[{club}] ignoré : clé absente", flush=True)
                     continue
-                for old in outdir.glob(f"{club} email-campaigns-*.csv"):
-                    old.unlink()
+                d = base_dir(club, a.base_mois) if a.base_mois else outdir
+                d.mkdir(parents=True, exist_ok=True)
                 rows = extract_campaigns(Brevo(club, keys[club]), start, end)
-                write_csv(outdir / f"{club} email-campaigns-{start:%Y-%m-%d}_{end:%Y-%m-%d}.csv", CAMPAIGN_COLS, rows)
-                print(f"[{club}] {len(rows)} campagnes", flush=True)
+                stem = f"email-campaigns-{start:%Y-%m-%d}_{end:%Y-%m-%d}.csv"
+                p = safe_path(d / (stem if a.base_mois else f"{club} {stem}"))  # jamais d'écrasement
+                write_csv(p, CAMPAIGN_COLS, rows)
+                print(f"[{club}] {len(rows)} campagnes -> {p}", flush=True)
             return
-        rep = extract(clubs, keys, outdir, a.campaign_days)
+        rep = extract(clubs, keys, outdir, a.campaign_days, base_mois=a.base_mois)
         print(json.dumps(rep, ensure_ascii=False, indent=2))
         return
     if not a.discover:
